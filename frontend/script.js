@@ -1,6 +1,114 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const API_BASE = "http://localhost:5000/api";
+    const API_BASE = window.location.origin + "/api";
+
+    const EMAILJS_CONFIG = {
+        PUBLIC_KEY: "wjgohdMEJc_YSabcL",   
+        SERVICE_ID: "service_da3m7qh",         
+        TEMPLATE_REGISTER: "template_0o5fuyq", 
+        TEMPLATE_LOGIN: "template_0q1nudg"     
+    };
+    
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+        console.log("✅ EmailJS inicializado correctamente");
+    } else {
+        console.error("❌ EmailJS no está cargado. Verifica que el script CDN esté en el HTML");
+    }
+    
+    function isRealEmail(email) {
+        const realDomains = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 
+                            'icloud.com', 'live.com', 'msn.com', 'protonmail.com'];
+        const domain = email.split('@')[1];
+        return realDomains.includes(domain);
+    }
+    
+    async function sendRegistrationEmail(userData) {
+        if (!isRealEmail(userData.email)) {
+            console.log("📧 Email de prueba detectado, no se enviará correo");
+            return;
+        }
+        
+        try {
+            const templateParams = {
+                user_name: userData.name,              
+                user_email: userData.email,            
+                user_phone: userData.phone,        
+                registration_date: userData.registrationDate,  
+                registration_time: userData.registrationTime   
+            };
+            
+            console.log("📤 Enviando email de registro...");
+            console.log("📧 Destinatario:", userData.email);
+            console.log("📝 Parámetros del template:", templateParams);
+            
+            const response = await emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_REGISTER,
+                templateParams
+            );
+            
+            console.log("✅ Email de registro enviado exitosamente!");
+            console.log("📋 Respuesta de EmailJS:", response);
+            
+        } catch (error) {
+            console.error("❌ Error al enviar email de registro:");
+            console.error("📋 Status:", error.status);
+            console.error("📋 Texto del error:", error.text);
+            console.error("📋 Error completo:", error);
+            
+            if (error.status === 422) {
+                console.error("💡 Error 422: Verifica que el campo 'To email' en tu template de EmailJS esté configurado como {{user_email}}");
+            } else if (error.status === 400) {
+                console.error("💡 Error 400: Verifica que el Template ID sea correcto:", EMAILJS_CONFIG.TEMPLATE_REGISTER);
+            }
+        }
+    }
+    
+    async function sendLoginEmail(userData) {
+        if (!isRealEmail(userData.email)) {
+            console.log("📧 Email de prueba detectado, no se enviará correo");
+            return;
+        }
+        
+        try {
+            const now = new Date();
+            const loginDate = now.toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' });
+            const loginTime = now.toLocaleTimeString('es-ES', { timeZone: 'Europe/Madrid' });
+            
+            const templateParams = {
+                user_name: userData.name,  
+                user_email: userData.email, 
+                login_date: loginDate,         
+                login_time: loginTime      
+            };
+            
+            console.log("📤 Enviando email de login...");
+            console.log("📧 Destinatario:", userData.email);
+            console.log("📝 Parámetros del template:", templateParams);
+            
+            const response = await emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_LOGIN,
+                templateParams
+            );
+            
+            console.log("✅ Email de login enviado exitosamente!");
+            console.log("📋 Respuesta de EmailJS:", response);
+            
+        } catch (error) {
+            console.error("❌ Error al enviar email de login:");
+            console.error("📋 Status:", error.status);
+            console.error("📋 Texto del error:", error.text);
+            console.error("📋 Error completo:", error);
+            
+            if (error.status === 422) {
+                console.error("💡 Error 422: Verifica que el campo 'To email' en tu template de EmailJS esté configurado como {{user_email}}");
+            } else if (error.status === 400) {
+                console.error("💡 Error 400: Verifica que el Template ID sea correcto:", EMAILJS_CONFIG.TEMPLATE_LOGIN);
+            }
+        }
+    }
 
     class Usuario {
         constructor(nombre, correo, mensaje) {
@@ -323,7 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            const timeoutId = setTimeout(() => controller.abort(), 1000000);
             
             const response = await fetch(
                 'https://timeapi.bio/timeapi/time/components',
@@ -363,6 +471,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            await sendRegistrationEmail({
+                name, 
+                email, 
+                phone, 
+                registrationDate, 
+                registrationTime
+            });
+            
             alert("✅ Cuenta creada exitosamente. Ahora puedes iniciar sesión.");
             registerForm.reset();
             registerContainer.classList.add("hidden");
@@ -397,6 +513,8 @@ document.addEventListener("DOMContentLoaded", () => {
             sessionStorage.setItem("sessionEmail", email);
             sessionStorage.setItem("sessionPassword", password);
 
+            await sendLoginEmail(currentUser);
+            
             alert(`✅ Bienvenido, ${currentUser.name}!`);
             authOverlay.classList.remove("show");
             loginForm.reset();
