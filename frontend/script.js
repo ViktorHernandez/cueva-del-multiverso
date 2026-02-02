@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const API_BASE = "https://cueva-del-multiverso.onrender.com";
+    const API_BASE = "http://localhost:5000/api";
 
     class Usuario {
         constructor(nombre, correo, mensaje) {
