@@ -78,9 +78,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: "admin@cueva.com", password: "admin123" })
             });
-            if (res.ok) return;
+            
+            if (res.ok) {
+                const data = await res.json();
+                if (data.user.type !== "admin") {
+                    await fetch(`${API_BASE}/users/${data.user.email}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ type: "admin" })
+                    });
+                    console.log("✅ Usuario actualizado a administrador");
+                }
+                return;
+            }
 
-            await fetch(`${API_BASE}/users/register`, {
+            const registerRes = await fetch(`${API_BASE}/users/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -92,9 +104,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     registrationTime: "00:00:00"
                 })
             });
-            console.log("✅ Usuario administrador creado:");
-            console.log("📧 Email: admin@cueva.com");
-            console.log("🔑 Contraseña: admin123");
+
+            if (registerRes.ok) {
+                await fetch(`${API_BASE}/users/admin@cueva.com`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ type: "admin" })
+                });
+                console.log("✅ Usuario administrador creado y configurado:");
+                console.log("📧 Email: admin@cueva.com");
+                console.log("🔑 Contraseña: admin123");
+            }
         } catch (err) {
             console.warn("⚠️ No se pudo verificar/crear el admin:", err.message);
         }
