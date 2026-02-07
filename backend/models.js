@@ -16,13 +16,6 @@ const categoriaSchema = new Schema(
 
 const Categoria = mongoose.model("Categoria", categoriaSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: Usuario
-// Relación: 1 Usuario → N Carritos
-// Relación: 1 Usuario → N Ordenes
-// Relación: 1 Usuario → N Notificaciones
-// Relación: N Usuarios ↔ N Productos  (mediante HistorialVistas)
-// ═══════════════════════════════════════════════════════
 const usuarioSchema = new Schema(
   {
     name:             { type: String, required: true },
@@ -38,10 +31,6 @@ const usuarioSchema = new Schema(
 
 const Usuario = mongoose.model("Usuario", usuarioSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: Producto
-// Relación: N Productos → 1 Categoria  (FK: categoriaId)
-// ═══════════════════════════════════════════════════════
 const productoSchema = new Schema(
   {
     title:           { type: String, required: true },
@@ -57,11 +46,6 @@ const productoSchema = new Schema(
 
 const Producto = mongoose.model("Producto", productoSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: Carrito
-// Relación: N Carritos → 1 Usuario  (FK: usuarioId)
-// Solo uno puede estar activo a la vez por usuario.
-// ═══════════════════════════════════════════════════════
 const carritoSchema = new Schema(
   {
     usuarioId: { type: Schema.Types.ObjectId, ref: "Usuario", required: true },
@@ -72,10 +56,6 @@ const carritoSchema = new Schema(
 
 const Carrito = mongoose.model("Carrito", carritoSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: DetalleCarrito  (tabla intermedia Carrito ↔ Producto)
-// Resuelve la relación M:N entre Carritos y Productos.
-// ═══════════════════════════════════════════════════════
 const detalleCarritoSchema = new Schema(
   {
     carritoId:  { type: Schema.Types.ObjectId, ref: "Carrito",  required: true },
@@ -88,10 +68,6 @@ const detalleCarritoSchema = new Schema(
 
 const DetalleCarrito = mongoose.model("DetalleCarrito", detalleCarritoSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: Orden
-// Relación: N Ordenes → 1 Usuario  (FK: usuarioId)
-// ═══════════════════════════════════════════════════════
 const ordenSchema = new Schema(
   {
     usuarioId:   { type: Schema.Types.ObjectId, ref: "Usuario", required: true },
@@ -112,10 +88,6 @@ const ordenSchema = new Schema(
 
 const Orden = mongoose.model("Orden", ordenSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: DetalleOrden  (tabla intermedia Orden ↔ Producto)
-// Resuelve la relación M:N entre Ordenes y Productos.
-// ═══════════════════════════════════════════════════════
 const detalleOrdenSchema = new Schema(
   {
     ordenId:    { type: Schema.Types.ObjectId, ref: "Orden",    required: true },
@@ -130,10 +102,6 @@ const detalleOrdenSchema = new Schema(
 
 const DetalleOrden = mongoose.model("DetalleOrden", detalleOrdenSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: Notificacion
-// Relación: N Notificaciones → 1 Usuario  (FK: usuarioId)
-// ═══════════════════════════════════════════════════════
 const notificacionSchema = new Schema(
   {
     usuarioId:     { type: Schema.Types.ObjectId, ref: "Usuario", required: true },
@@ -152,10 +120,6 @@ const notificacionSchema = new Schema(
 
 const Notificacion = mongoose.model("Notificacion", notificacionSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: HistorialVista  (tabla intermedia Usuario ↔ Producto)
-// Resuelve la relación M:N entre Usuarios y Productos.
-// ═══════════════════════════════════════════════════════
 const historialVistaSchema = new Schema(
   {
     usuarioId:   { type: Schema.Types.ObjectId, ref: "Usuario",  default: null },
@@ -173,9 +137,6 @@ const historialVistaSchema = new Schema(
 
 const HistorialVista = mongoose.model("HistorialVista", historialVistaSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: Contacto  (independiente, sin relaciones)
-// ═══════════════════════════════════════════════════════
 const contactoSchema = new Schema(
   {
     nombre:  { type: String, required: true },
@@ -189,9 +150,6 @@ const contactoSchema = new Schema(
 
 const Contacto = mongoose.model("Contacto", contactoSchema);
 
-// ═══════════════════════════════════════════════════════
-// ENTIDAD: Accessibility  (config extra, fuera del ER)
-// ═══════════════════════════════════════════════════════
 const accessibilitySchema = new Schema(
   {
     screenReader: { type: Boolean, default: false },
@@ -203,7 +161,6 @@ const accessibilitySchema = new Schema(
 
 const Accessibility = mongoose.model("Accessibility", accessibilitySchema);
 
-// ═══════════════════════════════════════════════════════
 module.exports = {
   Categoria,
   Usuario,
