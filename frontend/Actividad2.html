@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="La Cueva del Multiverso - Reliquias legendarias de series, películas, anime y videojuegos">
+    <meta name="keywords" content="merchandising, replicas, anime, películas, series, videojuegos">
+    <meta name="author" content="La Cueva del Multiverso">
+    <title>La Cueva del Multiverso</title>
+    <link rel="stylesheet" href="Styles.css">
+</head>
+
+<body>
+
+<div class="auth-overlay" id="authOverlay">
+    <div class="auth-modal">
+        <span class="auth-close" id="authClose">&times;</span>
+        
+        <div class="auth-container" id="loginContainer">
+            <h2>🔐 Iniciar Sesión</h2>
+            <form id="loginForm" autocomplete="on">
+                <input type="email" id="loginEmail" name="email" placeholder="Correo electrónico" 
+                       autocomplete="email" required>
+                <input type="password" id="loginPassword" name="password" placeholder="Contraseña" 
+                       autocomplete="current-password" required>
+                <button type="submit">Entrar</button>
+            </form>
+                    <div class="auth-divider">
+        <span>O</span>
+    </div>
+
+    <button onclick="loginWithGoogle()" class="google-login-btn">
+        <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            <path fill="none" d="M0 0h48v48H0z"/>
+        </svg>
+        Continuar con Google
+    </button>
+    
+            <p class="auth-switch">¿No tienes cuenta? <span id="showRegister">Regístrate aquí</span></p>
+        </div>
+
+        <div class="auth-container hidden" id="registerContainer">
+            <h2>📝 Crear Cuenta</h2>
+            <form id="registerForm" autocomplete="on">
+                <input type="text" id="registerName" name="name" placeholder="Nombre completo" 
+                       autocomplete="name" required>
+                <input type="email" id="registerEmail" name="email" placeholder="Correo electrónico" 
+                       autocomplete="email" required>
+                <input type="tel" id="registerPhone" name="tel" placeholder="Número de teléfono" 
+                       autocomplete="tel" required>
+                <input type="password" id="registerPassword" name="new-password" placeholder="Contraseña" 
+                       autocomplete="new-password" required>
+                <input type="password" id="registerConfirmPassword" name="confirm-password" 
+                       placeholder="Confirmar contraseña" autocomplete="new-password" required>
+                <button type="submit">Registrarse</button>
+            </form>
+            <p class="auth-switch">¿Ya tienes cuenta? <span id="showLogin">Inicia sesión aquí</span></p>
+        </div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="profileOverlay">
+    <div class="auth-modal">
+        <span class="auth-close" id="profileClose">&times;</span>
+        
+        <div class="auth-container" id="profileContainer">
+            <h2>👤 Información del Perfil</h2>
+            <form id="profileForm" autocomplete="on">
+                <label for="profileName">Nombre completo</label>
+                <input type="text" id="profileName" name="name" placeholder="Nombre completo" 
+                       autocomplete="name" required>
+                
+                <label for="profileEmail">Correo electrónico</label>
+                <input type="email" id="profileEmail" name="email" placeholder="Correo electrónico" 
+                       autocomplete="email" required>
+                
+                <label for="profilePhone">Número de teléfono</label>
+                <input type="tel" id="profilePhone" name="tel" placeholder="Número de teléfono" 
+                       autocomplete="tel" required>
+                
+                <label for="profilePassword">Contraseña</label>
+                <input type="password" id="profilePassword" name="new-password" 
+                       placeholder="Nueva contraseña (opcional)" autocomplete="new-password">
+                
+                <label for="profileConfirmPassword">Confirmar contraseña</label>
+                <input type="password" id="profileConfirmPassword" name="confirm-password" 
+                       placeholder="Confirmar nueva contraseña" autocomplete="new-password">
+                
+                <button type="submit">Guardar cambios</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="adminOverlay">
+    <div class="auth-modal admin-modal">
+        <span class="auth-close" id="adminClose">&times;</span>
+        
+        <div class="admin-container">
+            <h2>👑 Panel de Administración</h2>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="users">👥 Usuarios</button>
+                <button class="admin-tab" data-tab="products">📦 Productos</button>
+                <button class="admin-tab" data-tab="stats">📊 Estadísticas</button>
+            </div>
+
+            <div class="admin-tab-content active" id="usersTab">
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total de Usuarios</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalAdmins">0</h3>
+                        <p>Administradores</p>
+                    </div>
+                </div>
+
+                <div class="users-table-container">
+                    <h3>📋 Lista de Usuarios</h3>
+                    <input type="text" id="searchUsers" placeholder="🔍 Buscar usuario..." class="search-input">
+                    
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>Contraseña</th>
+                                <th>Tipo</th>
+                                <th>Fecha Registro</th>
+                                <th>Hora Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin-tab-content" id="productsTab">
+                <div class="product-actions">
+                    <button id="addProductBtn" class="admin-action-btn">➕ Añadir Producto</button>
+                </div>
+
+                <div class="products-table-container">
+                    <h3>📦 Lista de Productos</h3>
+                    <input type="text" id="searchProducts" placeholder="🔍 Buscar producto..." class="search-input">
+                    
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Título</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Vendedor</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin-tab-content" id="statsTab">
+                <div class="stats-grid">
+                    <div class="stat-card-large">
+                        <h3>📊 Estadísticas Generales</h3>
+                        <div class="stat-item">
+                            <span>Total de Productos:</span>
+                            <strong id="totalProducts">0</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Productos por Categoría:</span>
+                            <ul id="categoryStats"></ul>
+                        </div>
+                        <div class="stat-item">
+                            <span>Contactos Recibidos:</span>
+                            <strong id="totalContacts">0</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Últimos Vistos (Histórico):</span>
+                            <strong id="totalViews">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="editUserOverlay">
+    <div class="auth-modal">
+        <span class="auth-close" id="editUserClose">&times;</span>
+        
+        <div class="auth-container">
+            <h2>✏️ Editar Usuario</h2>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserEmail">
+                
+                <label for="editUserName">Nombre completo</label>
+                <input type="text" id="editUserName" placeholder="Nombre completo" required>
+                
+                <label for="editUserNewEmail">Correo electrónico</label>
+                <input type="email" id="editUserNewEmail" placeholder="Correo electrónico" required>
+                
+                <label for="editUserPhone">Número de teléfono</label>
+                <input type="tel" id="editUserPhone" placeholder="Número de teléfono" required>
+                
+                <label for="editUserPassword">Nueva contraseña (opcional)</label>
+                <input type="password" id="editUserPassword" placeholder="Dejar vacío para no cambiar">
+                
+                <label for="editUserType">Tipo de usuario</label>
+                <select id="editUserType" required>
+                    <option value="user">Usuario Normal</option>
+                    <option value="admin">Administrador</option>
+                </select>
+                
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="productFormOverlay">
+    <div class="auth-modal">
+        <span class="auth-close" id="productFormClose">&times;</span>
+        
+        <div class="auth-container">
+            <h2 id="productFormTitle">➕ Añadir Producto</h2>
+            <form id="productForm">
+                <input type="hidden" id="productEditId">
+                
+                <label for="productTitle">Título del producto</label>
+                <input type="text" id="productTitle" placeholder="Ej: Varita de Harry Potter" required>
+                
+                <label for="productDescription">Descripción corta</label>
+                <input type="text" id="productDescription" placeholder="Ej: Réplica oficial" required>
+                
+                <label for="productFullDescription">Descripción completa</label>
+                <textarea id="productFullDescription" placeholder="Descripción detallada del producto" required></textarea>
+                
+                <label for="productCategory">Categoría</label>
+                <select id="productCategory" required>
+                    <option value="peliculas">🎬 Películas</option>
+                    <option value="series">📺 Series</option>
+                    <option value="anime">🍥 Anime</option>
+                    <option value="videojuegos">🎮 Videojuegos</option>
+                </select>
+                
+                <label for="productPrice">Precio (MXN)</label>
+                <input type="number" id="productPrice" placeholder="800" required>
+                
+                <label for="productSeller">Vendedor</label>
+                <input type="text" id="productSeller" placeholder="Ej: Ollivanders" required>
+                
+                <label for="productImage">Nombre de imagen</label>
+                <input type="text" id="productImage" placeholder="Ej: harry.png" required>
+                
+                <button type="submit" id="productFormSubmit">Guardar Producto</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="cartOverlay">
+    <div class="auth-modal cart-modal">
+        <span class="auth-close" id="cartClose">&times;</span>
+        
+        <div class="cart-container">
+            <h2>🛒 Mi Carrito de Compras</h2>
+            
+            <div id="cartItemsContainer" class="cart-items-container">
+                <p class="empty-cart" id="emptyCartMessage">Tu carrito está vacío</p>
+            </div>
+            
+            <div id="cartSummary" class="cart-summary hidden">
+                <div class="cart-total">
+                    <h3>Resumen de Compra</h3>
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <strong id="cartSubtotal">$0 MXN</strong>
+                    </div>
+                    <div class="total-row">
+                        <span>Envío:</span>
+                        <strong>$150 MXN</strong>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total:</span>
+                        <strong id="cartGrandTotal">$0 MXN</strong>
+                    </div>
+                </div>
+                
+                <button id="checkoutBtn" class="checkout-btn">💳 Proceder al Pago</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="checkoutOverlay">
+    <div class="auth-modal">
+        <span class="auth-close" id="checkoutClose">&times;</span>
+        
+        <div class="auth-container">
+            <h2>💳 Finalizar Compra</h2>
+            
+            <div class="checkout-summary">
+                <h3>Resumen del Pedido</h3>
+                <div id="checkoutItems"></div>
+                <div class="checkout-total">
+                    <strong>Total a Pagar:</strong>
+                    <span id="checkoutTotal">$0 MXN</span>
+                </div>
+            </div>
+            
+            <form id="checkoutForm">
+                <h3>Información de Pago</h3>
+                
+                <label for="cardName">Nombre del titular</label>
+                <input type="text" id="cardName" placeholder="Nombre completo" required>
+                
+                <label for="cardNumber">Número de tarjeta</label>
+                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                
+                <div class="card-row">
+                    <div class="card-col">
+                        <label for="cardExpiry">Fecha de expiración</label>
+                        <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5" required>
+                    </div>
+                    <div class="card-col">
+                        <label for="cardCVV">CVV</label>
+                        <input type="text" id="cardCVV" placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+                
+                <label for="cardEmail">Correo de confirmación</label>
+                <input type="email" id="cardEmail" placeholder="correo@ejemplo.com" required>
+                
+                <h3>Dirección de Envío</h3>
+                
+                <label for="shippingAddress">Dirección completa</label>
+                <input type="text" id="shippingAddress" placeholder="Calle, Número, Colonia" required>
+                
+                <div class="card-row">
+                    <div class="card-col">
+                        <label for="shippingCity">Ciudad</label>
+                        <input type="text" id="shippingCity" placeholder="Ciudad" required>
+                    </div>
+                    <div class="card-col">
+                        <label for="shippingZip">Código Postal</label>
+                        <input type="text" id="shippingZip" placeholder="12345" maxlength="5" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="pay-btn">🔒 Pagar Ahora</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="confirmationOverlay">
+    <div class="auth-modal">
+        <span class="auth-close" id="confirmationClose">&times;</span>
+        
+        <div class="auth-container confirmation-container">
+            <div class="success-icon">✅</div>
+            <h2>¡Compra Exitosa!</h2>
+            <p class="confirmation-message">Tu pedido ha sido procesado correctamente</p>
+            
+            <div class="order-details">
+                <h3>Detalles del Pedido</h3>
+                <p><strong>Número de Orden:</strong> <span id="orderNumber"></span></p>
+                <p><strong>Fecha:</strong> <span id="orderDate"></span></p>
+                <p><strong>Total Pagado:</strong> <span id="orderTotal"></span></p>
+                <p><strong>Correo de Confirmación:</strong> <span id="orderEmail"></span></p>
+            </div>
+            
+            <button id="downloadInvoiceBtn" class="download-invoice-btn">📄 Descargar Factura</button>
+            <button id="closeConfirmationBtn" class="close-confirmation-btn">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<div class="auth-overlay" id="notificationOverlay">
+    <div class="auth-modal notification-modal">
+        <span class="auth-close" id="notificationClose">&times;</span>
+        
+        <div class="notification-container">
+            <h2>🔔 Centro de Notificaciones</h2>
+            
+            <div class="notification-actions">
+                <button id="markAllReadBtn" class="mark-read-btn">✓ Marcar todas como leídas</button>
+                <button id="clearNotificationsBtn" class="clear-notifications-btn">🗑️ Limpiar todas</button>
+            </div>
+            
+            <div id="notificationsContainer" class="notifications-container">
+                <p class="empty-notifications" id="emptyNotifications">No hay notificaciones</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<header class="header">
+    <div class="header-content">
+        <h1>🕳️ La Cueva del Multiverso</h1>
+        <p>Reliquias legendarias de series, películas, anime y videojuegos</p>
+        <div id="google_translate_element"></div>
+    </div>
+    <div class="user-section">
+        <div id="notificationSection" class="notification-section hidden">
+            <button id="notificationBtn" class="notification-btn">
+                🔔 Notificaciones
+                <span id="notificationCount" class="notification-count hidden">0</span>
+            </button>
+        </div>
+        <button id="loginBtn" class="auth-btn">Iniciar Sesión</button>
+        <div id="userInfo" class="user-info hidden">
+            <span id="userName"></span>
+            <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
+        </div>
+        <div id="adminSection" class="admin-section hidden">
+            <button id="adminPanelBtn" class="admin-btn">👑 Panel Admin</button>
+        </div>
+        <div id="cartSection" class="cart-section">
+            <button id="cartBtn" class="cart-btn">
+                🛒 Carrito
+                <span id="cartCount" class="cart-count hidden">0</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<section class="missions">
+    <h2 id="featuredTitle">⭐ Productos Destacados</h2>
+    <div class="missions-board" id="featuredBoard"></div>
+</section>
+
+<div class="filters">
+    <button data-filter="all" class="active">🌌 Todo</button>
+    <button data-filter="series">📺 Series</button>
+    <button data-filter="peliculas">🎬 Películas</button>
+    <button data-filter="anime">🍥 Anime</button>
+    <button data-filter="videojuegos">🎮 Videojuegos</button>
+</div>
+
+<section class="missions">
+    <h2 id="allProductsTitle">🛒 Todas las Reliquias</h2>
+    <div id="allProductsBoard" class="missions-board">
+
+    <div class="missions-board">
+        <div class="mission-card" data-category="peliculas" data-title="Varita de Harry Potter" data-description="Varita de acebo con núcleo de pluma de fénix." data-price="$800 MXN" data-seller="Ollivanders" data-image="harry.png">
+            <h3>Varita de Harry Potter</h3><p>Réplica oficial</p><span>$800 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Varita de Voldemort" data-description="Varita de tejo usada por el mago oscuro más temido." data-price="$850 MXN" data-seller="Ollivanders Oscuro" data-image="voldemort.png">
+            <h3>Varita de Voldemort</h3><p>Edición oscura</p><span>$850 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Sombrero Seleccionador" data-description="Sombrero mágico que decide tu casa en Hogwarts." data-price="$900 MXN" data-seller="Hogwarts Store" data-image="sombrero.png">
+            <h3>Sombrero Seleccionador</h3><p>Harry Potter</p><span>$900 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Anillo Único" data-description="Anillo forjado en Mordor con inscripción élfica." data-price="$600 MXN" data-seller="Forjas de Mordor" data-image="mordor.png">
+            <h3>Anillo Único</h3><p>El Señor de los Anillos</p><span>$600 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Espada Andúril" data-description="Espada del rey Aragorn, símbolo de Gondor." data-price="$1800 MXN" data-seller="Armería de Gondor" data-image="aragorn.png">
+            <h3>Espada Andúril</h3><p>Aragorn</p><span>$1800 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Arco de Legolas" data-description="Arco élfico de gran precisión y ligereza." data-price="$1500 MXN" data-seller="Bosque Negro" data-image="legolas.png">
+            <h3>Arco de Legolas</h3><p>Edición élfica</p><span>$1500 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Escudo del Capitán América" data-description="Escudo de vibranium indestructible." data-price="$2000 MXN" data-seller="Stark Industries" data-image="escudo.png">
+            <h3>Escudo del Capitán América</h3><p>Marvel</p><span>$2000 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Martillo Mjolnir" data-description="Martillo digno con runas asgardianas." data-price="$2300 MXN" data-seller="Asgard" data-image="mjolnir.png">
+            <h3>Martillo Mjolnir</h3><p>Thor</p><span>$2300 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Casco de Iron Man" data-description="Casco Mark 85 con tecnología avanzada." data-price="$2800 MXN" data-seller="Stark Industries" data-image="mark85.png">
+            <h3>Casco de Iron Man</h3><p>Mark 85</p><span>$2800 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Lentes de Spider-Man" data-description="Lentes inteligentes con HUD." data-price="$950 MXN" data-seller="Stark Labs" data-image="edith.png">
+            <h3>Lentes de Spider-Man</h3><p>Edición Stark</p><span>$950 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Batarang" data-description="Arma arrojadiza de Batman." data-price="$700 MXN" data-seller="Wayne Enterprises" data-image="batarang.png">
+            <h3>Batarang</h3><p>Batman</p><span>$700 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Máscara de Batman" data-description="Máscara táctica del Caballero Oscuro." data-price="$1600 MXN" data-seller="Wayne Enterprises" data-image="mascara.png">
+            <h3>Máscara de Batman</h3><p>Gotham Edition</p><span>$1600 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Tridente de Aquaman" data-description="Tridente real de Atlantis." data-price="$1900 MXN" data-seller="Atlántida" data-image="tridente.png">
+            <h3>Tridente de Aquaman</h3><p>Atlante</p><span>$1900 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Sable de Luz Jedi" data-description="Sable azul de la Orden Jedi." data-price="$1400 MXN" data-seller="Orden Jedi" data-image="sable.png">
+            <h3>Sable de Luz Jedi</h3><p>Azul</p><span>$1400 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Sable de Luz Sith" data-description="Sable rojo del lado oscuro." data-price="$1400 MXN" data-seller="Orden Sith" data-image="sable rojo.png">
+            <h3>Sable de Luz Sith</h3><p>Rojo</p><span>$1400 MXN</span>
+        </div>
+        <div class="mission-card" data-category="series" data-title="Casco del Mandaloriano" data-description="Casco de beskar auténtico." data-price="$2700 MXN" data-seller="Clan Mandalore" data-image="beskar.png">
+            <h3>Casco del Mandaloriano</h3><p>Beskar</p><span>$2700 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Figura de Goku" data-description="Figura en modo Super Saiyajin." data-price="$1100 MXN" data-seller="Capsule Corp" data-image="goku.png">
+            <h3>Figura de Goku</h3><p>Dragon Ball Z</p><span>$1100 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Esferas del Dragón" data-description="Set completo de las siete esferas." data-price="$1300 MXN" data-seller="Capsule Corp" data-image="esferasdeldragon.png">
+            <h3>Esferas del Dragón</h3><p>Set completo</p><span>$1300 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Banda de Naruto" data-description="Banda ninja de la Aldea de la Hoja." data-price="$400 MXN" data-seller="Konoha" data-image="banda.png">
+            <h3>Banda de Naruto</h3><p>Konoha</p><span>$400 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Capa Akatsuki" data-description="Capa oficial del grupo Akatsuki." data-price="$1200 MXN" data-seller="Akatsuki" data-image="capa.png">
+            <h3>Capa Akatsuki</h3><p>Naruto Shippuden</p><span>$1200 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Espadas de Zoro" data-description="Las tres espadas del espadachín." data-price="$2000 MXN" data-seller="Grand Line" data-image="zoro.png">
+            <h3>Espadas de Zoro</h3><p>One Piece</p><span>$2000 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Capa del Cuerpo de Exploración" data-description="Capa usada por los soldados de Paradis." data-price="$950 MXN" data-seller="Legión" data-image="attack.png">
+            <h3>Capa del Cuerpo de Exploración</h3><p>Attack on Titan</p><span>$950 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Espada de Ichigo" data-description="Zanpakuto en forma shikai." data-price="$1700 MXN" data-seller="Soul Society" data-image="Zanpakuto en forma shikai.png">
+            <h3>Espada de Ichigo</h3><p>Bleach</p><span>$1700 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Espada Maestra" data-description="Espada sagrada de Hyrule." data-price="$1800 MXN" data-seller="Templo del Tiempo" data-image="Espada sagrada de Hyrule.png">
+            <h3>Espada Maestra</h3><p>The Legend of Zelda</p><span>$1800 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Escudo Hyliano" data-description="Escudo legendario de Link." data-price="$1500 MXN" data-seller="Hyrule" data-image="escudolink.png">
+            <h3>Escudo Hyliano</h3><p>Zelda</p><span>$1500 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Hacha Leviatán" data-description="Hacha rúnica de Kratos." data-price="$2600 MXN" data-seller="Midgard" data-image="leviatan.png">
+            <h3>Hacha Leviatán</h3><p>God of War</p><span>$2600 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Armadura de Master Chief" data-description="Armadura Mjolnir del Jefe Maestro." data-price="$3500 MXN" data-seller="UNSC" data-image="masterchief.png">
+            <h3>Armadura de Master Chief</h3><p>Halo</p><span>$3500 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Medallón del Brujo" data-description="Medallón que detecta monstruos." data-price="$900 MXN" data-seller="Kaer Morhen" data-image="Medallón del Brujo.png">
+            <h3>Medallón del Brujo</h3><p>The Witcher</p><span>$900 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Máscara de Majora" data-description="Máscara maldita de Termina." data-price="$1200 MXN" data-seller="Clock Town" data-image="mascaramajora.png">
+            <h3>Máscara de Majora</h3><p>Zelda</p><span>$1200 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Llave Espada" data-description="Arma que conecta corazones y mundos." data-price="$1600 MXN" data-seller="Reino del Corazón" data-image="llave espada.png">
+            <h3>Llave Espada</h3><p>Kingdom Hearts</p><span>$1600 MXN</span>
+        </div>
+        <div class="mission-card" data-category="series" data-title="Chaqueta Stranger Things" data-description="Chaqueta estilo retro de los 80s." data-price="$1500 MXN" data-seller="Hawkins Store" data-image="chaqueta.png">
+            <h3>Chaqueta Stranger Things</h3><p>Estilo 80s</p><span>$1500 MXN</span>
+        </div>
+        <div class="mission-card" data-category="series" data-title="Máscara de Heisenberg" data-description="Máscara del imperio azul." data-price="$700 MXN" data-seller="ABQ Labs" data-image="heisenbergh.png">
+            <h3>Máscara de Heisenberg</h3><p>Breaking Bad</p><span>$700 MXN</span>
+        </div>
+        <div class="mission-card" data-category="series" data-title="Suero V" data-description="Suero experimental con poderes." data-price="$850 MXN" data-seller="Vought" data-image="compuestov.png">
+            <h3>Suero V</h3><p>The Boys</p><span>$850 MXN</span>
+        </div>
+        <div class="mission-card" data-category="series" data-title="Trono de Hierro" data-description="Miniatura del Trono de Westeros." data-price="$2200 MXN" data-seller="Desembarco del Rey" data-image="trono.png">
+            <h3>Trono de Hierro</h3><p>Miniatura</p><span>$2200 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="DeLorean" data-description="Auto viajero en el tiempo." data-price="$3000 MXN" data-seller="Doc Brown" data-image="delorean.png">
+            <h3>DeLorean</h3><p>Volver al Futuro</p><span>$3000 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Máscara de Ghostface" data-description="Máscara icónica del asesino." data-price="$600 MXN" data-seller="Woodsboro" data-image="ghostface.png">
+            <h3>Máscara de Ghostface</h3><p>Scream</p><span>$600 MXN</span>
+        </div>
+        <div class="mission-card" data-category="series" data-title="Pistola Portal" data-description="Pistola de portales interdimensionales." data-price="$1000 MXN" data-seller="Rick Sanchez" data-image="rick.png">
+            <h3>Pistola Portal</h3><p>Rick and Morty</p><span>$1000 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Traje de Deadpool" data-description="Traje táctico del mercenario." data-price="$3200 MXN" data-seller="Deadpool Corp" data-image="deadpool.png">
+            <h3>Traje de Deadpool</h3><p>Marvel</p><span>$3200 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Pokébola Premium" data-description="Pokébola metálica de colección." data-price="$750 MXN" data-seller="PokéMart" data-image="pokebola.png">
+            <h3>Pokébola Premium</h3><p>Pokémon</p><span>$750 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Figura de Geralt" data-description="Figura detallada del Lobo Blanco." data-price="$1400 MXN" data-seller="Kaer Morhen" data-image="geralt.png">
+            <h3>Figura de Geralt</h3><p>The Witcher</p><span>$1400 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Látigo de Indiana Jones" data-description="Látigo de cuero usado por el arqueólogo más famoso del cine." data-price="$1300 MXN" data-seller="Marshall College" data-image="indieana.png">
+            <h3>Látigo de Indiana Jones</h3><p>Réplica de aventura</p><span>$1300 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Chaqueta de Maverick" data-description="Chaqueta aviador usada por el piloto legendario." data-price="$1800 MXN" data-seller="Top Gun Store" data-image="topgun.png">
+            <h3>Chaqueta de Maverick</h3><p>Top Gun</p><span>$1800 MXN</span>
+        </div>
+        <div class="mission-card" data-category="series" data-title="Ballesta de Daryl Dixon" data-description="Ballesta utilizada para sobrevivir al apocalipsis zombie." data-price="$2100 MXN" data-seller="Alexandria Armory" data-image="daryl.png">
+            <h3>Ballesta de Daryl Dixon</h3><p>The Walking Dead</p><span>$2100 MXN</span>
+        </div>
+        <div class="mission-card" data-category="series" data-title="Abrigo de Thomas Shelby" data-description="Abrigo clásico del líder de los Peaky Blinders." data-price="$2400 MXN" data-seller="Shelby Company Ltd." data-image="shelby.png">
+            <h3>Abrigo de Thomas Shelby</h3><p>Peaky Blinders</p><span>$2400 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Katana de Tanjiro" data-description="Espada Nichirin usada por el cazador de demonios." data-price="$1700 MXN" data-seller="Cuerpo de Exterminio" data-image="tanjiro.png">
+            <h3>Katana de Tanjiro</h3><p>Demon Slayer</p><span>$1700 MXN</span>
+        </div>
+        <div class="mission-card" data-category="anime" data-title="Cuaderno Death Note" data-description="Cuaderno capaz de decidir el destino de la humanidad." data-price="$900 MXN" data-seller="Shinigami Realm" data-image="deathnote.png">
+            <h3>Cuaderno Death Note</h3><p>Edición limitada</p><span>$900 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Pip-Boy 3000" data-description="Dispositivo multifunción para sobrevivientes del yermo." data-price="$2200 MXN" data-seller="Vault-Tec" data-image="pipboy.png">
+            <h3>Pip-Boy 3000</h3><p>Fallout</p><span>$2200 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Hoja Oculta" data-description="Arma secreta utilizada por la Hermandad de Asesinos." data-price="$1600 MXN" data-seller="Assassin Brotherhood" data-image="hoja oculta.png">
+            <h3>Hoja Oculta</h3><p>Assassin's Creed</p><span>$1600 MXN</span>
+        </div>
+        <div class="mission-card" data-category="videojuegos" data-title="Casco de Doom Slayer" data-description="Casco blindado del guerrero infernal." data-price="$2900 MXN" data-seller="UAC" data-image="doom.png">
+            <h3>Casco de Doom Slayer</h3><p>DOOM</p><span>$2900 MXN</span>
+        </div>
+        <div class="mission-card" data-category="peliculas" data-title="Tabla de Hoverboard" data-description="Patineta futurista que flota sobre el suelo." data-price="$2000 MXN" data-seller="Hill Valley Shop" data-image="back.png">
+            <h3>Hoverboard</h3><p>Volver al Futuro II</p><span>$2000 MXN</span>
+        </div>
+    </div>
+    <button id="loadMoreBtn">Cargar más productos</button>
+</section>
+
+<section class="missions">
+    <h2>🧠 Últimos vistos</h2>
+    <div id="lastViewedBoard" class="missions-board"></div>
+</section>
+
+<button id="clearHistoryBtn" class="clear-history">
+    🗑️ Limpiar historial
+</button>
+
+<div class="modal" id="productModal">
+    <div class="modal-content modal-scrollable">
+        <span class="close">&times;</span>
+        <div class="modal-body">
+            <img id="modalImage" src="" alt="Producto">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <p><strong>Vendedor:</strong> <span id="modalSeller"></span></p>
+            <p class="price" id="modalPrice"></p>
+        </div>
+    </div>
+</div>
+
+<section class="social-links">
+    <h2>🌐 Síguenos en el Multiverso</h2>
+    <div class="social-icons">
+        <a href="https://www.facebook.com" target="_blank">📘 Facebook</a>
+        <a href="https://wa.me/5215629727628" target="_blank">💬 WhatsApp</a>
+        <a href="https://twitter.com" target="_blank">🐦 Twitter / X</a>
+        <a href="https://www.instagram.com" target="_blank">📸 Instagram</a>
+        <a href="https://www.tiktok.com" target="_blank">🎵 TikTok</a>
+        <a href="https://www.youtube.com" target="_blank">▶️ YouTube</a>
+    </div>
+</section>
+
+<section class="missions contact-section">
+    <h2>📨 Contacto</h2>
+
+    <form id="contactForm" class="contact-form">
+        <input type="text" id="nombre" placeholder="Nombre completo" required>
+        <input type="email" id="correo" placeholder="Correo electrónico" required>
+        <textarea id="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
+        <button type="submit">Enviar mensaje</button>
+    </form>
+
+    <h2>📋 Últimos contactos</h2>
+
+    <div class="contact-table-container">
+        <table class="contact-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Mensaje</th>
+                    <th>Hora</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody id="contactTableBody"></tbody>
+        </table>
+
+        <div class="delete-container">
+            <button id="deleteBtn">Eliminar contacto</button>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <p>© 2026 La Cueva del Multiverso</p>
+</footer>
+
+<button id="scrollTopBtn" aria-label="Volver arriba">
+    ⬆️
+</button>
+
+<div id="readingIndicator" class="reading-indicator hidden">
+    <span class="pulse-dot"></span>
+    <span id="readingText">Leyendo...</span>
+</div>
+
+<audio id="backgroundMusic" loop>
+    <source src="MenuMii.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+</audio>
+
+<div id="google_translate_element"></div>
+
+<div class="accessibility-panel">
+    <button id="accessibilityBtn" class="accessibility-toggle" aria-label="Abrir panel de accesibilidad">
+        ♿ Accesibilidad 
+    </button>
+    <div id="accessibilityMenu" class="accessibility-menu hidden">
+        <div class="accessibility-section">
+            <h4>🔊 Lector de Pantalla</h4>
+            <button id="screenReaderToggle" class="accessibility-option">
+                <span id="screenReaderStatus">▶️ Activar</span>
+            </button>
+            <div id="screenReaderControls" class="screen-reader-controls hidden">
+                <label for="speechRate">Velocidad:</label>
+                <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="1">
+                <span id="rateValue">1x</span>
+            </div>
+        </div>
+        <div class="accessibility-section">
+            <h4>🎨 Filtros de Daltonismo</h4>
+            <select id="colorBlindFilter" class="accessibility-select">
+                <option value="none">Sin filtro</option>
+                <option value="protanopia">Protanopia (sin rojo)</option>
+                <option value="deuteranopia">Deuteranopia (sin verde)</option>
+                <option value="tritanopia">Tritanopia (sin azul)</option>
+                <option value="achromatopsia">Acromatopsia (sin color)</option>
+                <option value="high-contrast">Alto Contraste</option>
+            </select>
+        </div>
+    </div>
+</div>
+</div>
+<div class="user-section">
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        {pageLanguage: 'es'}, 
+        'google_translate_element'
+    );
+}
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+    (function() {
+        emailjs.init("wjgohdMEJc_YSabcL");
+    })();
+</script>
+</body>
+</html>
