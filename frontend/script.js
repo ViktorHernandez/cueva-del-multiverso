@@ -48,9 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ✅ handleGoogleAuthCallback y loginWithGoogle correctamente
-    //    definidas DENTRO del DOMContentLoaded principal
-    //    Se llaman desde abajo, después de que checkUserSession existe
     function handleGoogleAuthCallback() {
         const urlParams = new URLSearchParams(window.location.search);
         const googleAuth = urlParams.get('googleAuth');
@@ -252,8 +249,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentUser = null;
 
     async function initializeAdminUser() {
-        // Con JWT las rutas de usuarios están protegidas, el admin debe
-        // existir en la BD. Esta función solo hace un log informativo.
         console.log("ℹ️ Para crear el admin, usa el endpoint POST /api/users/register con email admin@cueva.com y luego cambia su tipo desde MongoDB Atlas o con el script seed.");
     }
 
@@ -639,7 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     userName.style.cursor = "pointer";
 
-    handleGoogleAuthCallback(); // Procesa el token de Google si viene en la URL
+    handleGoogleAuthCallback();
     checkUserSession();
 
     function updateCartCount() {
@@ -1693,6 +1688,7 @@ document.addEventListener("DOMContentLoaded", () => {
             card.dataset.image = product.image;
         
             card.innerHTML = `
+                <img src="${product.image}" alt="${product.title}">
                 <h3>${product.title}</h3>
                 <p>${product.description}</p>
                 <span>${product.price}</span>
@@ -1772,6 +1768,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const allCards = Array.from(document.querySelectorAll(".missions-board .mission-card"));
     const featuredBoard = document.getElementById("featuredBoard");
     const allProductsBoard = document.getElementById("allProductsBoard");
+
+    const scrollObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { root: null, rootMargin: '0px', threshold: 0.12 });
+
+    function observeCards() {
+        const els = document.querySelectorAll('.mission-card:not(.apple-observed), .apple-hero:not(.apple-observed), .apple-split-card:not(.apple-observed)');
+        els.forEach((el, index) => {
+            el.classList.add('apple-observed', 'apple-reveal');
+            const delay = Math.min((index % 4) * 0.1, 0.3);
+            el.style.transitionDelay = `${delay}s, ${delay}s`;
+            scrollObserver.observe(el);
+        });
+    }
     const modal = document.getElementById("productModal");
     const modalTitle = document.getElementById("modalTitle");
     const modalDescription = document.getElementById("modalDescription");
@@ -1894,7 +1909,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 whatsappLink.style.padding = "10px 20px";
                 whatsappLink.style.background = "#25D366";
                 whatsappLink.style.color = "#fff";
-                whatsappLink.style.borderRadius = "8px";
+                whatsappLink.style.borderRadius = "980px";
                 whatsappLink.style.textDecoration = "none";
                 whatsappLink.style.fontWeight = "bold";
                 whatsappLink.classList.add("whatsapp-link");
@@ -1907,10 +1922,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 addToCartModalBtn.style.marginTop = "15px";
                 addToCartModalBtn.style.marginLeft = "10px";
                 addToCartModalBtn.style.padding = "10px 20px";
-                addToCartModalBtn.style.background = "#00f7ff";
-                addToCartModalBtn.style.color = "#000";
+                addToCartModalBtn.style.background = "#0071e3";
+                addToCartModalBtn.style.color = "#fff";
                 addToCartModalBtn.style.border = "none";
-                addToCartModalBtn.style.borderRadius = "8px";
+                addToCartModalBtn.style.borderRadius = "980px";
                 addToCartModalBtn.style.fontWeight = "bold";
                 addToCartModalBtn.style.cursor = "pointer";
             
@@ -1953,7 +1968,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (res.ok) history = await res.json();
                 else history = {};
             } catch (err) {
-                console.warn("⚠️ No se pudo cargar historial:", err.message);
                 history = {};
             }
         }
@@ -1965,29 +1979,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const container = document.createElement("div");
             container.className = "last-viewed-category";
-            container.style.display = "flex";
-            container.style.flexDirection = "column";
-            container.style.alignItems = "center";
-            container.style.gap = "15px";
-            container.style.flexWrap = "wrap";
+            container.style.width = "100%";
+            container.style.marginBottom = "40px";
 
             const title = document.createElement("h4");
-            title.textContent = category.toUpperCase();
-            title.setAttribute("data-emoji", categoryEmoji[category] || "📂");
+            title.textContent = `${categoryEmoji[category] || "📂"} ${category.toUpperCase()}`;
+            title.style.cssText = "text-align:left; padding-left:0; margin-bottom:16px; font-weight:600;";
             container.appendChild(title);
+
+            const carousel = document.createElement("div");
+            carousel.className = "apple-carousel-container";
+
+            let isDown = false, startX, scrollLeft;
+            carousel.addEventListener('mousedown', e => {
+                isDown = true; carousel.style.cursor = 'grabbing';
+                startX = e.pageX - carousel.offsetLeft; scrollLeft = carousel.scrollLeft;
+            });
+            carousel.addEventListener('mouseleave', () => { isDown = false; carousel.style.cursor = 'pointer'; });
+            carousel.addEventListener('mouseup',    () => { isDown = false; carousel.style.cursor = 'pointer'; });
+            carousel.addEventListener('mousemove',  e => {
+                if (!isDown) return; e.preventDefault();
+                const x = e.pageX - carousel.offsetLeft;
+                carousel.scrollLeft = scrollLeft - (x - startX) * 2;
+            });
 
             history[category].forEach(item => {
                 const card = document.createElement("div");
                 card.className = "mission-card";
-                card.style.display = "flex";
-                card.style.flexDirection = "column";
-                card.style.alignItems = "center";
+                card.dataset.category = item.category || category;
                 card.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
                     <h3>${item.title}</h3>
                     <p>Visto recientemente</p>
                     <span>${item.price}</span>
                 `;
                 card.addEventListener("click", () => {
+                    if (isDown) return;
                     modalTitle.textContent = item.title;
                     modalDescription.textContent = item.description;
                     modalPrice.textContent = item.price;
@@ -2001,24 +2028,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     whatsappLink.href = `https://wa.me/5215629727628?text=${encodeURIComponent(`¡Hola! Estoy interesado en este producto: ${item.title} - ${item.description}`)}`;
                     whatsappLink.target = "_blank";
                     whatsappLink.textContent = "💬 Contactar por WhatsApp";
-                    whatsappLink.style.display = "inline-block";
-                    whatsappLink.style.marginTop = "15px";
-                    whatsappLink.style.padding = "10px 20px";
-                    whatsappLink.style.background = "#25D366";
-                    whatsappLink.style.color = "#fff";
-                    whatsappLink.style.borderRadius = "8px";
-                    whatsappLink.style.textDecoration = "none";
-                    whatsappLink.style.fontWeight = "bold";
+                    whatsappLink.style.cssText = "display:inline-block; margin-top:15px; padding:10px 20px; background:#25D366; color:#fff; border-radius:980px; text-decoration:none; font-weight:bold;";
                     whatsappLink.classList.add("whatsapp-link");
                     modal.querySelector(".modal-content").appendChild(whatsappLink);
 
                     modal.classList.add("show");
                 });
-                container.appendChild(card);
+                carousel.appendChild(card);
             });
 
+            container.appendChild(carousel);
             lastViewedBoard.appendChild(container);
         });
+
+        setTimeout(observeCards, 100);
     }
 
     function countProductsByCategory() {
@@ -2038,24 +2061,132 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderFeatured() {
         if (!featuredBoard) return;
         featuredBoard.innerHTML = "";
+        featuredBoard.className = "apple-showcase";
 
-        const shuffled = [...allCards].sort(() => 0.5 - Math.random());
-        const featuredCards = shuffled.slice(0, 3);
+        const featTitle = document.getElementById("featuredTitle");
+        if (featTitle) featTitle.style.display = "none";
+        const parentSection = featuredBoard.closest('.missions');
+        if (parentSection) { parentSection.style.padding = "0"; parentSection.style.maxWidth = "100%"; }
 
-        featuredCards.forEach((card, index) => {
-            const clone = card.cloneNode(true);
-            clone.classList.add("featured");
-            clone.style.opacity = "0";
-            clone.style.transform = "translateY(30px)";
-            clone.style.transition = "opacity 0.8s ease, transform 0.8s ease";
-            featuredBoard.appendChild(clone);
-            setTimeout(() => {
-                clone.style.opacity = "1";
-                clone.style.transform = "translateY(0)";
-            }, index * 600);
-        });
+        let appleProducts = [];
+        if (allCards.length > 0) {
+            const shuffled = [...allCards].sort(() => 0.5 - Math.random());
+            appleProducts = shuffled.slice(0, 4).map(card => ({
+                title: card.dataset.title,
+                description: card.dataset.description,
+                price: card.dataset.price,
+                category: card.dataset.category,
+                image: card.dataset.image,
+                seller: card.dataset.seller
+            }));
+        }
+        while (appleProducts.length < 4) {
+            appleProducts.push({ title: "Reliquia del Multiverso", description: "Un objeto de poder incalculable.", price: "$999 MXN", category: "varios", image: "harry.png", seller: "La Cueva" });
+        }
 
-        attachModalEvents(featuredBoard.querySelectorAll(".mission-card"));
+        const esc = p => JSON.stringify(p).replace(/'/g, "&#39;");
+
+        featuredBoard.innerHTML = `
+            <div class="apple-hero dark-hero">
+                <div class="apple-hero-text">
+                    <h2>${appleProducts[0].title}</h2>
+                    <p>${appleProducts[0].description.substring(0, 60)}…</p>
+                    <div class="apple-links">
+                        <button class="btn-blue" onclick='window.openFeaturedModal(${esc(appleProducts[0])})'>Ver detalles</button>
+                        <button class="btn-hollow" onclick='window.addToCartApple(${esc(appleProducts[0])})'>Comprar</button>
+                    </div>
+                </div>
+                <img src="${appleProducts[0].image}" alt="${appleProducts[0].title}">
+            </div>
+            <div class="apple-hero light-hero">
+                <div class="apple-hero-text">
+                    <h2><span style="color:#0071e3">Nuevo.</span> ${appleProducts[1].title}</h2>
+                    <p>${appleProducts[1].description.substring(0, 60)}…</p>
+                    <div class="apple-links">
+                        <button class="btn-blue" onclick='window.openFeaturedModal(${esc(appleProducts[1])})'>Ver detalles</button>
+                        <button class="btn-hollow" onclick='window.addToCartApple(${esc(appleProducts[1])})'>Comprar</button>
+                    </div>
+                </div>
+                <img src="${appleProducts[1].image}" alt="${appleProducts[1].title}">
+            </div>
+            <div class="apple-split">
+                <div class="apple-split-card light-hero" style="background:#fbfbfd">
+                    <div class="apple-hero-text">
+                        <h2 style="font-size:38px">${appleProducts[2].title}</h2>
+                        <p style="font-size:18px">${appleProducts[2].description.substring(0, 50)}…</p>
+                        <div class="apple-links">
+                            <button class="btn-blue" onclick='window.openFeaturedModal(${esc(appleProducts[2])})'>Ver detalles</button>
+                            <button class="btn-hollow" onclick='window.addToCartApple(${esc(appleProducts[2])})'>Comprar</button>
+                        </div>
+                    </div>
+                    <img src="${appleProducts[2].image}" alt="${appleProducts[2].title}">
+                </div>
+                <div class="apple-split-card dark-hero" style="background:#000">
+                    <div class="apple-hero-text">
+                        <h2 style="font-size:38px">${appleProducts[3].title}</h2>
+                        <p style="font-size:18px">${appleProducts[3].description.substring(0, 50)}…</p>
+                        <div class="apple-links">
+                            <button class="btn-blue" onclick='window.openFeaturedModal(${esc(appleProducts[3])})'>Ver detalles</button>
+                            <button class="btn-hollow dark-hero" onclick='window.addToCartApple(${esc(appleProducts[3])})'>Comprar</button>
+                        </div>
+                    </div>
+                    <img src="${appleProducts[3].image}" alt="${appleProducts[3].title}">
+                </div>
+            </div>
+        `;
+
+        window.addToCartApple = function(product) { addToCart(product); };
+
+        window.openFeaturedModal = function(product) {
+            modalTitle.textContent = product.title;
+            modalDescription.textContent = product.description;
+            modalPrice.textContent = product.price;
+            modalSeller.textContent = product.seller;
+            modalImage.src = product.image;
+
+            const oldLink = modal.querySelector(".whatsapp-link");
+            const oldCartBtn = modal.querySelector(".modal-cart-btn");
+            if (oldLink) oldLink.remove();
+            if (oldCartBtn) oldCartBtn.remove();
+
+            const whatsappLink = document.createElement("a");
+            whatsappLink.href = `https://wa.me/5215629727628?text=${encodeURIComponent(`¡Hola! Estoy interesado en este producto: ${product.title} - ${product.description}`)}`;
+            whatsappLink.target = "_blank";
+            whatsappLink.textContent = "💬 Contactar por WhatsApp";
+            whatsappLink.style.display = "inline-block";
+            whatsappLink.style.marginTop = "15px";
+            whatsappLink.style.padding = "10px 20px";
+            whatsappLink.style.background = "#25D366";
+            whatsappLink.style.color = "#fff";
+            whatsappLink.style.borderRadius = "980px";
+            whatsappLink.style.textDecoration = "none";
+            whatsappLink.style.fontWeight = "bold";
+            whatsappLink.classList.add("whatsapp-link");
+            modal.querySelector(".modal-content").appendChild(whatsappLink);
+
+            const addToCartModalBtn = document.createElement("button");
+            addToCartModalBtn.textContent = "🛒 Añadir al Carrito";
+            addToCartModalBtn.className = "modal-cart-btn";
+            addToCartModalBtn.style.display = "inline-block";
+            addToCartModalBtn.style.marginTop = "15px";
+            addToCartModalBtn.style.marginLeft = "10px";
+            addToCartModalBtn.style.padding = "10px 20px";
+            addToCartModalBtn.style.background = "#0071e3";
+            addToCartModalBtn.style.color = "#fff";
+            addToCartModalBtn.style.border = "none";
+            addToCartModalBtn.style.borderRadius = "980px";
+            addToCartModalBtn.style.fontWeight = "bold";
+            addToCartModalBtn.style.cursor = "pointer";
+            addToCartModalBtn.addEventListener("click", () => {
+                addToCart(product);
+                modal.classList.remove("show");
+            });
+            modal.querySelector(".modal-content").appendChild(addToCartModalBtn);
+
+            modal.classList.add("show");
+        };
+
+        setTimeout(observeCards, 80);
     }
 
     function getFilteredCards(filter) {
@@ -2095,6 +2226,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             allProductsBoard.appendChild(dynamicBtn);
         }
+
+        setTimeout(observeCards, 50);
     }
 
     function agregarFila(usuario) {
@@ -2258,6 +2391,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    document.querySelectorAll('.mission-card').forEach(card => {
+        if (!card.querySelector('img') && card.dataset.image) {
+            const img = document.createElement('img');
+            img.src = card.dataset.image;
+            img.alt = card.dataset.title || '';
+            card.insertBefore(img, card.firstChild);
+        }
+    });
+
     initializeProducts();
     attachModalEvents(allCards);
     renderFeatured();
@@ -2266,6 +2408,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProducts();
     setInterval(renderFeatured, 180000);
     updateCartCount();
+    setTimeout(observeCards, 200);
 
     const backgroundMusic = document.getElementById("backgroundMusic");
     
