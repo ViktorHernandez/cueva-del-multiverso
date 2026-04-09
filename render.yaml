@@ -1,0 +1,29 @@
+# render.yaml — Configuración de despliegue para Render
+# Este archivo le indica a Render cómo construir y servir
+# la aplicación "Cueva del Multiverso".
+
+services:
+  - type: web
+    name: cueva-del-multiverso
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false   # Se configura manualmente en el dashboard de Render
+      - key: JWT_SECRET
+        sync: false   # Se configura manualmente en el dashboard de Render
+      - key: SESSION_SECRET
+        sync: false   # Se configura manualmente en el dashboard de Render
+      - key: GOOGLE_CLIENT_ID
+        sync: false   # Se configura manualmente en el dashboard de Render
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false   # Se configura manualmente en el dashboard de Render
+      - key: FRONTEND_URL
+        sync: false   # URL pública de Render, se configura después del primer deploy
